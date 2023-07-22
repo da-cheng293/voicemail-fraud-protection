@@ -1,0 +1,23 @@
+project:
+  name: voicegpt
+instance:
+  name: dev
+  runtime: nodejs16
+  region: aws.euw1
+  application-id: 44803a95-01c3-4577-abcc-19ae5f781413
+  capabilities:
+    - voice
+  entrypoint:
+    - node
+    - index.js
+  environment:
+    - name: VONAGE_NUMBER
+      value: "12033445071"
+    - name: OPENAI_API_KEY
+      value: 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
+debug:
+  name: debug
+  entrypoint:
+    - nodemon
+    - --inspect
+    - index.js

@@ -1,0 +1,6 @@
+{
+  "message": "You call has been forwarded to an automatic voice message system",
+  "error": "Sorry, you phone number is not able to leave a voice message due to fraud protection, plz try to call the number again.",
+  "success": "Please leave your message",
+  "repeat": "Your voicemail is recorded as follows"
+}
