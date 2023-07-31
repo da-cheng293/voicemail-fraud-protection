@@ -1,4 +1,4 @@
-import { vcr, Voice, State } from "@vonage/vcr-sdk";
+import { vcr, Voice, State, Assets } from "@vonage/vcr-sdk";
 import express from "express";
 import pug from 'pug';
 import fs from 'fs';
@@ -76,20 +76,15 @@ app.post('/onCall', async (req, res, next) => {
             {
                 action: 'record',
                 format: "ogg",
-                eventUrl: [vcr.getAppUrl()+"/onEvent?session-id="+session.id],
-                endOnSilence: 4, 
+                endOnSilence: 3, 
                 endOnkey: "#",
                 timeOut:10,
                 beepStart: true
             },
             {
                 action: 'talk',
-                text: speechData.repeat,
+                text: speechData.end,
                 language: "en-US"
-            },
-            {
-                action: 'input',
-                type: ["dtmf"]
             }
         ]);
     }
@@ -113,39 +108,6 @@ app.post('/onCall', async (req, res, next) => {
     }
 });
 
-app.post('/onEvent', async (req, res, next) => {
-    try {
-
-        if (req.body.hasOwnProperty('recording_url')) {
-            const session = vcr.getSessionById(req.query["session-id"]);
-            const voice = new Voice(session);
-            const stream = await voice.getCallRecording(req.body.recording_url);
-            stream.pipe(fs.createWriteStream("public/download.ogg"));
-
-        } 
-
-        else if (req.body.hasOwnProperty('dtmf')){
-
-            res.json([
-                            {
-                                action: 'stream',
-                                streamUrl: [vcr.getAppUrl()+"/download.ogg"]
-
-                            }
-                       
-                        ]);
-
-        }
-        
-        else {
-
-            console.log(req.body);
-            res.sendStatus(200);
-        }
-    } catch (e) {
-        next(e);
-    }
-});
 
 async function fetchInsights(number) {
   const data = {
