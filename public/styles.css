@@ -1,10 +1,48 @@
+.div-1 {
+  background-color: black;
+  height: 50px;
+}
 .center {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  color: #881FFF;
 }
 
 input, textarea, label, ul {
   margin-top: 8px;
+}
+
+img.div-2{
+  height: 110%;
+  width: 50%;
+  position:relative;
+  left:-13%;
+
+}
+
+input#sendButton{
+ 
+  background-color: black; 
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+ border-radius: 5px;
+
+}
+
+input#level{
+  accent-color: black;
+}
+
+#texto{
+  display: inline-block;
+
 }

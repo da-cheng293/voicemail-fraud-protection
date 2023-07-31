@@ -3,6 +3,7 @@ import express from "express";
 import pug from 'pug';
 import fs from 'fs';
 import util from 'util';
+import fetch from 'node-fetch';
 
 const app = express();
 const port = process.env.NERU_APP_PORT;
@@ -12,7 +13,7 @@ const speechData = loadSpeechData();
 const instanceState = vcr.getInstanceState();
 const voiceListener = new Voice(vcr.getGlobalSession());
 
-let currentLevel = 100;
+let currentLevel = 0;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -26,7 +27,7 @@ app.get('/_/health', async (req, res) => {
 
 app.get('/', async (req, res, next) => {
     try {
-        res.send(pug.renderFile('public/index.pug', { number: process.env.VONAGE_NUMBER}));
+        res.send(pug.renderFile('public/index.pug', { number: process.env.VONAGE_NUMBER, level: "0"}));
     } catch (e) {
         next(e);
     }
@@ -34,9 +35,9 @@ app.get('/', async (req, res, next) => {
 
 app.post('/level', async (req, res) => {
     try {
-        await instanceState.set('level', req.body.level);
         currentLevel = req.body.level;
-        res.redirect('/');
+        console.log(currentLevel);
+        res.send(pug.renderFile('public/index.pug', { number: process.env.VONAGE_NUMBER, level: currentLevel}));
     } catch (e) {
         next(e);
     }
@@ -49,21 +50,16 @@ app.post('/onCall', async (req, res, next) => {
         const voice = new Voice(session);
 
         await state.set('region', req.body.region_url);
+
         await voice.onCallEvent({ vapiID: req.body.uuid, callback: 'onEvent' });
 
-    // console.log("---------------------------------------------------")
-    //     console.log(util.inspect(req.body, false, null, true /* enable colors */))
-
-    //     console.log("---------------------------------------------------")
-
-        
         const number = req.body.from;
         console.log("test number"+number);
         const insights = await fetchInsights(number);
         const score = insights.fraud_score.risk_score;
         console.log("fraud_score: "+insights.fraud_score.risk_score);
     
-    if(score <= currentLevel){
+    if(score <= 100 - 10*currentLevel){
 
     
         res.json([
@@ -78,11 +74,22 @@ app.post('/onCall', async (req, res, next) => {
                 language: "en-US"
             },
             {
+                action: 'record',
+                format: "ogg",
+                eventUrl: [vcr.getAppUrl()+"/onEvent?session-id="+session.id],
+                endOnSilence: 4, 
+                endOnkey: "#",
+                timeOut:10,
+                beepStart: true
+            },
+            {
+                action: 'talk',
+                text: speechData.repeat,
+                language: "en-US"
+            },
+            {
                 action: 'input',
-                type: ['speech'],
-                speech: {
-                    language: "en-US",
-                }
+                type: ["dtmf"]
             }
         ]);
     }
@@ -106,49 +113,32 @@ app.post('/onCall', async (req, res, next) => {
     }
 });
 
-
 app.post('/onEvent', async (req, res, next) => {
     try {
-        const session = vcr.getSessionFromRequest(req);
-        const state = new State(session);
-        
-        const regionUrl = await state.get('region');
 
-        if (req.body.hasOwnProperty('speech') && regionUrl) {
-            if (req.body.speech.hasOwnProperty('error')) {
-                res.json([
-                    {
-                        action: 'talk',
-                        text: speechData.success,
-                        language: "en-US"
-                    },
-                    {
-                        action: 'input',
-                        type: ['speech'],
-                        speech: {
-                            language: "en-US",
-                        }
-                    }
-                ]);
-            } else if (req.body.speech.hasOwnProperty('results')) {
-                let text = req.body.speech.results[0].text;
-                if (text) {
-                    res.json([
-                        {
-                            action: 'talk',
-                            text: speechData.repeat,
-                            language: "en-US"
-                        },
-                        {
-                            action: 'talk',
-                            text: text,
-                            language: "en-US"
-                        },
-                   
-                    ]);
-                }
-            }
-        } else {
+        if (req.body.hasOwnProperty('recording_url')) {
+            const session = vcr.getSessionById(req.query["session-id"]);
+            const voice = new Voice(session);
+            const stream = await voice.getCallRecording(req.body.recording_url);
+            stream.pipe(fs.createWriteStream("public/download.ogg"));
+
+        } 
+
+        else if (req.body.hasOwnProperty('dtmf')){
+
+            res.json([
+                            {
+                                action: 'stream',
+                                streamUrl: [vcr.getAppUrl()+"/download.ogg"]
+
+                            }
+                       
+                        ]);
+
+        }
+        
+        else {
+
             console.log(req.body);
             res.sendStatus(200);
         }
@@ -181,6 +171,8 @@ async function fetchInsights(number) {
       );
 
       const responseData = await response.json();
+     console.log(util.inspect(responseData, false, null, true /* enable colors */))
+
       return responseData;
   } catch (e) {
       console.log(e);
