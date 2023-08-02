@@ -2,15 +2,12 @@ import { vcr, Voice, State, Assets } from "@vonage/vcr-sdk";
 import express from "express";
 import pug from 'pug';
 import fs from 'fs';
-import util from 'util';
 import fetch from 'node-fetch';
 
 const app = express();
 const port = process.env.NERU_APP_PORT;
 
 const speechData = loadSpeechData();
-
-const instanceState = vcr.getInstanceState();
 const voiceListener = new Voice(vcr.getGlobalSession());
 
 let currentLevel = 0;
@@ -36,7 +33,6 @@ app.get('/', async (req, res, next) => {
 app.post('/level', async (req, res) => {
     try {
         currentLevel = req.body.level;
-        console.log(currentLevel);
         res.send(pug.renderFile('public/index.pug', { number: process.env.VONAGE_NUMBER, level: currentLevel}));
     } catch (e) {
         next(e);
@@ -54,11 +50,8 @@ app.post('/onCall', async (req, res, next) => {
         await voice.onCallEvent({ vapiID: req.body.uuid, callback: 'onEvent' });
 
         const number = req.body.from;
-        console.log("test number"+number);
         const insights = await fetchInsights(number);
-        const score = insights.fraud_score.risk_score;
-        console.log("fraud_score: "+insights.fraud_score.risk_score);
-    
+        const score = insights.fraud_score.risk_score;    
     if(score <= 100 - 10*currentLevel){
 
     
@@ -133,8 +126,6 @@ async function fetchInsights(number) {
       );
 
       const responseData = await response.json();
-     console.log(util.inspect(responseData, false, null, true /* enable colors */))
-
       return responseData;
   } catch (e) {
       console.log(e);

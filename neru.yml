@@ -13,8 +13,6 @@ instance:
   environment:
     - name: VONAGE_NUMBER
       value: "12033445071"
-    - name: OPENAI_API_KEY
-      value: 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
 debug:
   name: debug
   entrypoint:

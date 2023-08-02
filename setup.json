@@ -6,12 +6,6 @@
         "description": "Your Vonage number to send and receive Voice calls.",
         "features": ["Voice"],
         "name": "VONAGE_NUMBER"
-      },
-      {
-        "type": "SECRET",
-        "title": "OpenAI API Key",
-        "description": "API key for the OpenAI API. You can get one from the [OpenAI API Dashboard](https://platform.openai.com/account/api-keys).",
-        "name": "OPENAI_API_KEY"
       }
     ]
   }
