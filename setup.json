@@ -3,7 +3,7 @@
       {
         "type": "PHONE_NUMBER",
         "title": "Vonage Number",
-        "description": "Your Vonage number to be used to set up a voicemail",
+        "description": "Your Vonage number to set up a voicemail",
         "features": ["Voice"],
         "name": "VONAGE_NUMBER"
       }
