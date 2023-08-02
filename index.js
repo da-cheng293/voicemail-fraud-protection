@@ -1,4 +1,4 @@
-import { vcr, Voice, State, Assets } from "@vonage/vcr-sdk";
+import { vcr, Voice, State } from "@vonage/vcr-sdk";
 import express from "express";
 import pug from 'pug';
 import fs from 'fs';
@@ -52,90 +52,85 @@ app.post('/onCall', async (req, res, next) => {
         const number = req.body.from;
         const insights = await fetchInsights(number);
         const score = insights.fraud_score.risk_score;    
-    if(score <= 100 - 10*currentLevel){
-
-    
-        res.json([
-            {
-                action: 'talk',
-                text: speechData.message,
-                language: "en-US"
-            },
-            {
-                action: 'talk',
-                text: speechData.success,
-                language: "en-US"
-            },
-            {
-                action: 'record',
-                format: "ogg",
-                endOnSilence: 3, 
-                endOnkey: "#",
-                timeOut:10,
-                beepStart: true
-            },
-            {
-                action: 'talk',
-                text: speechData.end,
-                language: "en-US"
-            }
-        ]);
-    }
-    else {
-        res.json([
-            {
-                action: 'talk',
-                text: speechData.message,
-                language: "en-US"
-            },
-            {
-                action: 'talk',
-                text: speechData.error,
-                language: "en-US"
-            }
-        ]);
-    }
-    
+        if(score <= 100 - 10*currentLevel){
+            res.json([
+                {
+                    action: 'talk',
+                    text: speechData.message,
+                    language: "en-US"
+                },
+                {
+                    action: 'talk',
+                    text: speechData.success,
+                    language: "en-US"
+                },
+                {
+                    action: 'record',
+                    format: "ogg",
+                    endOnSilence: 3, 
+                    endOnkey: "#",
+                    timeOut:10,
+                    beepStart: true
+                },
+                {
+                    action: 'talk',
+                    text: speechData.end,
+                    language: "en-US"
+                }
+            ]);
+        } else {
+            res.json([
+                {
+                    action: 'talk',
+                    text: speechData.message,
+                    language: "en-US"
+                },
+                {
+                    action: 'talk',
+                    text: speechData.error,
+                    language: "en-US"
+                }
+            ]);
+        }
     } catch (e) {
         next(e);
     }
 });
 
-
 async function fetchInsights(number) {
-  const data = {
-      type: 'phone',
-      phone: number,
-      insights: [
-        "fraud_score",
-        "sim_swap"
-      ]
-  };
+    const data = {
+        type: 'phone',
+        phone: number,
+        insights: [
+            "fraud_score",
+            "sim_swap"
+        ]
+    };
 
-  try {
-      const response = await fetch(
-        'https://api.nexmo.com/v2/ni',
-        { 
-          method: 'POST', 
-          body: JSON.stringify(data), 
-          headers: {
-            'Authorization': `Bearer ${generateJWT()}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+    try {
+        const response = await fetch(
+            'https://api.nexmo.com/v2/ni',
+            { 
+            method: 'POST', 
+            body: JSON.stringify(data), 
+            headers: {
+                'Authorization': `Bearer ${generateJWT()}`,
+                'Content-Type': 'application/json'
+            }
+            }
+        );
 
-      const responseData = await response.json();
-      return responseData;
-  } catch (e) {
-      console.log(e);
-  }
+        const responseData = await response.json();
+        return responseData;
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 function generateJWT() {
-  const nowTime = Math.round(new Date().getTime() / 1000);
-  const token = vcr.createVonageToken({exp: nowTime + 86400});
-  return token;
+    const nowTime = Math.round(new Date().getTime() / 1000);
+    const token = vcr.createVonageToken({exp: nowTime + 86400});
+    return token;
 }
 
 function loadSpeechData() {

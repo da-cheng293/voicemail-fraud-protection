@@ -1,10 +1,10 @@
 project:
-  name: voicegpt
+  name: voicemail with fraud protection
 instance:
   name: dev
   runtime: nodejs16
   region: aws.euw1
-  application-id: 44803a95-01c3-4577-abcc-19ae5f781413
+  application-id: 76426585-9187-46f7-99dd-ca44e3b314e3
   capabilities:
     - voice
   entrypoint:
@@ -12,7 +12,7 @@ instance:
     - index.js
   environment:
     - name: VONAGE_NUMBER
-      value: "12033445071"
+      value: "12053500735"
 debug:
   name: debug
   entrypoint:

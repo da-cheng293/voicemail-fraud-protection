@@ -1,6 +1,6 @@
 {
   "message": "You call has been forwarded to an automatic voice message system",
-  "error": "Sorry, your phone number is not able to leave a voice message due to fraud protection, plz try to call the number again.",
+  "error": "Sorry, your phone number is not able to leave a voice message due to fraud protection, please try to call the number again.",
   "success": "Please leave your message After the beep.",
-  "end": "your voice message has been recorded"
+  "end": "Your voice message has been recorded"
 }
