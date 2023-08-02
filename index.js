@@ -97,13 +97,19 @@ app.post('/onCall', async (req, res, next) => {
     }
 });
 
+
+app.post('/onEvent', async (req, res, next) => {
+    console.log(req.body);
+    res.sendStatus(200);
+  
+});
+
 async function fetchInsights(number) {
     const data = {
         type: 'phone',
         phone: number,
         insights: [
-            "fraud_score",
-            "sim_swap"
+            "fraud_score"
         ]
     };
 
