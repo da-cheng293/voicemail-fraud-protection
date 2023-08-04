@@ -44,7 +44,7 @@ app.post('/onCall', async (req, res, next) => {
         const session = vcr.createSession();
         const voice = new Voice(session);
 
-        await voice.onCallEvent({ vapiID: req.body.uuid, callback: 'onEvent' });
+        await voice.onCallEvent({ conversationID: req.body.conversation_uuid, callback: 'onEvent' });
 
         const number = req.body.from;
         const insights = await fetchInsights(number);

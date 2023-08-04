@@ -4,7 +4,7 @@ instance:
   name: dev
   runtime: nodejs16
   region: aws.euw1
-  application-id: 76426585-9187-46f7-99dd-ca44e3b314e3
+  application-id: fdc78182-fde6-443d-a6b7-7269f57d23fe
   capabilities:
     - voice
   entrypoint:
@@ -12,7 +12,7 @@ instance:
     - index.js
   environment:
     - name: VONAGE_NUMBER
-      value: "12053500735"
+      value: "12015373641"
 debug:
   name: debug
   entrypoint:

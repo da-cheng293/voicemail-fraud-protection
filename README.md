@@ -1,6 +1,6 @@
 # Voice Call Screening
 
-This project shows how to setup a Voice Call Screening.
+This project shows how to setup Voice Call Screening.
 
 To start debugging the project, open the "Run and Debug" menu on the left side. Then start the debugger by clicking the play button.
 
