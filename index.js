@@ -1,4 +1,4 @@
-import { vcr, Voice, State } from "@vonage/vcr-sdk";
+import { vcr, Voice } from "@vonage/vcr-sdk";
 import express from "express";
 import pug from 'pug';
 import fs from 'fs';
@@ -42,10 +42,7 @@ app.post('/level', async (req, res) => {
 app.post('/onCall', async (req, res, next) => {
     try {
         const session = vcr.createSession();
-        const state = new State(session);
         const voice = new Voice(session);
-
-        await state.set('region', req.body.region_url);
 
         await voice.onCallEvent({ vapiID: req.body.uuid, callback: 'onEvent' });
 
@@ -97,11 +94,9 @@ app.post('/onCall', async (req, res, next) => {
     }
 });
 
-
 app.post('/onEvent', async (req, res, next) => {
     console.log(req.body);
     res.sendStatus(200);
-  
 });
 
 async function fetchInsights(number) {

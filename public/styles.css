@@ -2,6 +2,7 @@
   background-color: black;
   height: 50px;
 }
+
 .center {
   position: absolute;
   top: 50%;
@@ -19,11 +20,9 @@ img.div-2{
   width: 50%;
   position:relative;
   left:-13%;
-
 }
 
 input#sendButton{
- 
   background-color: black; 
   border: none;
   color: white;
@@ -34,14 +33,9 @@ input#sendButton{
   font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
- border-radius: 5px;
-
+  border-radius: 5px;
 }
 
 input#level{
   accent-color: black;
-}
-
-#texto{
-  display: inline-block;
 }

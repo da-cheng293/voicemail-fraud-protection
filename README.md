@@ -1,6 +1,6 @@
-# Voicemail With Fraud Protection
+# Voice Call Screening
 
-This project shows how to setup a Voicemail With Fraud Protection.
+This project shows how to setup a Voice Call Screening.
 
 To start debugging the project, open the "Run and Debug" menu on the left side. Then start the debugger by clicking the play button.
 

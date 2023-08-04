@@ -1,5 +1,5 @@
 project:
-  name: voicemail-with-fraud-protection
+  name: voice-call-screening
 instance:
   name: dev
   runtime: nodejs16
